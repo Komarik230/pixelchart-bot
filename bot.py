@@ -23,6 +23,7 @@ from aiogram.filters import Command, CommandStart
 from aiogram.types import (
     BufferedInputFile,
     CallbackQuery,
+    ChosenInlineResult,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InlineQuery,
@@ -237,6 +238,17 @@ async def inline(q: InlineQuery):
         )],
         cache_time=300, is_personal=False,
     )
+
+
+@dp.chosen_inline_result()
+async def chosen(r: ChosenInlineResult):
+    """Приходит, если в BotFather включён /setinlinefeedback. Пишем статистику в stats.jsonl."""
+    rec = {"ts": int(time.time()), "user": r.from_user.id, "query": r.query[:200], "result": r.result_id}
+    try:
+        with open("stats.jsonl", "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except Exception as e:  # pragma: no cover
+        log.warning("stats write failed: %s", e)
 
 
 async def main():
