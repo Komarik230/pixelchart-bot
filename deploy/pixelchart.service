@@ -1,0 +1,15 @@
+# systemd-юнит для Linux-сервера (Oracle Cloud Free и т.п.)
+# sudo cp deploy/pixelchart.service /etc/systemd/system/ && sudo systemctl enable --now pixelchart
+[Unit]
+Description=PixelChart Telegram bot
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/ubuntu/pixelchart-bot
+ExecStart=/home/ubuntu/pixelchart-bot/.venv/bin/python bot.py
+Restart=always
+RestartSec=5
+User=ubuntu
+
+[Install]
+WantedBy=multi-user.target
